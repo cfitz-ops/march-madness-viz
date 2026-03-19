@@ -1,12 +1,12 @@
 import streamlit as st
-import psycopg2
+import psycopg
 import pandas as pd
 
 
 @st.cache_resource
 def get_connection():
-    """Return a psycopg2 connection to Ghost DB using Streamlit secrets."""
-    return psycopg2.connect(st.secrets["database"]["url"])
+    """Return a psycopg connection to Ghost DB using Streamlit secrets."""
+    return psycopg.connect(st.secrets["database"]["url"], autocommit=True)
 
 
 def run_query(sql, params=None):
@@ -17,7 +17,7 @@ def run_query(sql, params=None):
     try:
         conn = get_connection()
         return pd.read_sql(sql, conn, params=params)
-    except (psycopg2.OperationalError, psycopg2.InterfaceError):
+    except (psycopg.OperationalError, psycopg.InterfaceError):
         # Clear cached connection and show friendly error
         get_connection.clear()
         st.error("Data source is waking up — please refresh in 30 seconds.")
