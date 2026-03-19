@@ -22,6 +22,26 @@ if df.empty:
 REGION_MAP = {"W": "West", "X": "South", "Y": "East", "Z": "Midwest"}
 ROUND_NAMES = {1: "Round of 64", 2: "Round of 32", 3: "Sweet 16", 4: "Elite Eight", 5: "Final Four", 6: "Championship"}
 
+# Bracket visual order: adjacent games feed into each other in the next round
+# 1v16 plays winner of 8v9, 5v12 plays winner of 4v13, etc.
+VISUAL_ORDER = {
+    1: [1, 8, 5, 4, 6, 3, 7, 2],  # R64: 8 games per region
+    2: [1, 4, 3, 2],               # R32: 4 games per region
+    3: [1, 2],                      # S16: 2 games per region
+    4: [1],                         # E8: 1 game per region
+}
+
+
+def bracket_sort_key(slot):
+    """Sort slot names in visual bracket order (not seed-pair order)."""
+    rnd = int(slot[1])
+    num = int(slot[3:])
+    order = VISUAL_ORDER.get(rnd, list(range(1, 20)))
+    try:
+        return order.index(num)
+    except ValueError:
+        return num
+
 
 # Build HTML bracket
 def pick_prob(row):
@@ -72,7 +92,9 @@ for region_code, region_name in REGION_MAP.items():
         for i, rnd in enumerate([1, 2, 3, 4]):
             with cols[i]:
                 st.markdown(f"**{ROUND_NAMES[rnd]}**")
-                rnd_games = region_games[region_games["round"] == rnd].sort_values("slot")
+                rnd_games = region_games[region_games["round"] == rnd].copy()
+                rnd_games["_sort"] = rnd_games["slot"].apply(bracket_sort_key)
+                rnd_games = rnd_games.sort_values("_sort")
                 for _, row in rnd_games.iterrows():
                     st.markdown(game_card_html(row), unsafe_allow_html=True)
 
