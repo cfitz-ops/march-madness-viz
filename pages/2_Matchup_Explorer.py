@@ -117,29 +117,52 @@ with c3:
 # Stat comparison chart
 st.markdown("---")
 st.markdown("### Key Stats Comparison")
+st.caption("Percentile rank among all 2026 tournament teams (higher = better)")
 
 DISPLAY_STATS = [
-    ("kenpom_adj_em", "KenPom Efficiency"),
-    ("kenpom_adj_o", "Offensive Rating"),
-    ("kenpom_adj_d", "Defensive Rating"),
-    ("win_pct", "Win %"),
-    ("barthag", "Barthag"),
-    ("adj_tempo", "Tempo"),
-    ("efg_pct", "eFG%"),
-    ("three_pt_pct", "3PT%"),
-    ("tov_pct", "Turnover %"),
-    ("experience", "Experience"),
-    ("talent", "Talent"),
-    ("wab", "Wins Above Bubble"),
+    ("kenpom_adj_em", "KenPom Efficiency", True),
+    ("kenpom_adj_o", "Offensive Rating", True),
+    ("kenpom_adj_d", "Defensive Rating", False),  # lower is better
+    ("win_pct", "Win %", True),
+    ("barthag", "Barthag", True),
+    ("efg_pct", "eFG%", True),
+    ("three_pt_pct", "3PT%", True),
+    ("tov_pct", "Turnover %", False),  # lower is better
+    ("experience", "Experience", True),
+    ("talent", "Talent", True),
+    ("wab", "Wins Above Bubble", True),
+    ("adj_tempo", "Tempo", True),
 ]
 
+# Get all tournament team stats for percentile calculation
+from utils.db import run_query
+all_stats = run_query("""
+    SELECT ts.* FROM team_stats ts
+    JOIN team_seasons tsn ON tsn.team_id = ts.team_id AND tsn.season = ts.season
+    WHERE ts.season = 2026
+""")
+
+def percentile_rank(value, column, higher_is_better=True):
+    """Compute percentile rank (0-100) for a value within the tournament field."""
+    col_data = all_stats[column].dropna()
+    if col_data.empty:
+        return 50.0
+    rank = (col_data < value).sum() / len(col_data) * 100
+    return rank if higher_is_better else 100 - rank
+
 stat_names = [s[1] for s in DISPLAY_STATS]
-vals_a = [float(sa.get(s[0], 0) or 0) for s in DISPLAY_STATS]
-vals_b = [float(sb.get(s[0], 0) or 0) for s in DISPLAY_STATS]
+pct_a = [percentile_rank(float(sa.get(s[0], 0) or 0), s[0], s[2]) for s in DISPLAY_STATS]
+pct_b = [percentile_rank(float(sb.get(s[0], 0) or 0), s[0], s[2]) for s in DISPLAY_STATS]
 
 fig = go.Figure()
-fig.add_trace(go.Bar(name=sa["team_name"], x=stat_names, y=vals_a, marker_color=TEAM_A_COLOR))
-fig.add_trace(go.Bar(name=sb["team_name"], x=stat_names, y=vals_b, marker_color=TEAM_B_COLOR))
+fig.add_trace(go.Bar(
+    name=sa["team_name"], x=stat_names, y=pct_a, marker_color=TEAM_A_COLOR,
+    hovertemplate="%{x}: %{y:.0f}th percentile<extra></extra>",
+))
+fig.add_trace(go.Bar(
+    name=sb["team_name"], x=stat_names, y=pct_b, marker_color=TEAM_B_COLOR,
+    hovertemplate="%{x}: %{y:.0f}th percentile<extra></extra>",
+))
 fig.update_layout(
     barmode="group",
     plot_bgcolor="rgba(0,0,0,0)",
@@ -149,5 +172,6 @@ fig.update_layout(
     margin=dict(l=0, r=0, t=10, b=80),
     legend=dict(orientation="h", yanchor="bottom", y=1.02),
     xaxis_tickangle=-45,
+    yaxis=dict(range=[0, 100], title="Percentile"),
 )
 st.plotly_chart(fig, use_container_width=True)
