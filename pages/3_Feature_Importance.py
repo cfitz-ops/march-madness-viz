@@ -101,16 +101,22 @@ st.markdown("---")
 st.markdown("### Top 5 Predictors")
 
 FEATURE_EXPLANATIONS = {
-    "Coach PAKE": "Coaching quality measured by historical post-season performance. The single strongest signal in the model.",
+    "Betting Spread": "Vegas point spread — the single strongest predictor. Incorporates injury news, matchup context, and public/sharp money that pure stats miss.",
+    "Coach PAKE": "Coaching quality measured by historical post-season performance. Tournament experience matters.",
     "Strength of Schedule": "How tough a team's regular season opponents were. Battle-tested teams fare better.",
+    "Barthag (Power Rating)": "Barttorvik's power rating — estimated probability of beating an average D1 team.",
+    "Effective FG%": "Shooting efficiency adjusted for 3-pointers being worth more. Better shooters advance.",
     "Offensive Rating": "Points scored per 100 possessions. Efficient offenses win tournament games.",
     "KenPom Efficiency Margin": "The gap between a team's offensive and defensive efficiency — the gold standard power rating.",
-    "Effective FG%": "Shooting efficiency adjusted for 3-pointers being worth more. Better shooters advance.",
+    "Defensive Rating": "Points allowed per 100 possessions. Tournament games are lower-scoring — defense travels.",
+    "Tempo": "Pace of play. Faster-tempo teams tend to underperform in March — the model penalizes this.",
     "Tournament Round": "Later rounds favor stronger teams — upsets are more common early.",
-    "Defensive Turnover %": "How often a team forces turnovers. Disruptive defenses create extra possessions.",
-    "NET Ranking": "The NCAA's own team ranking system combining results, efficiency, and schedule.",
+    "3-Point Defense %": "How well a team defends the three-point line. Limiting threes matters in single-elimination.",
+    "Seed Difference": "Higher seeds (lower numbers) win more often, but carries less weight than you'd think.",
     "Road Win %": "Winning away from home. Tournament games are on neutral courts — road warriors adapt.",
-    "Seed Difference": "Higher seeds (lower numbers) win more often, but this carries less weight than you'd think.",
+    "Defensive Turnover %": "How often a team forces turnovers. Disruptive defenses create extra possessions.",
+    "Close Game Win %": "Win percentage in games decided by 5 or fewer points. Clutch play under pressure.",
+    "Win Percentage": "Overall regular season win rate. A baseline signal for team quality.",
 }
 
 top5 = df.nlargest(5, "abs_coefficient")
