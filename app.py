@@ -66,9 +66,16 @@ def game_card_html(row):
         return f'<div style="padding:4px 8px;color:#888;">({seed}) {name}</div>'
 
     a_wins = row["predicted_winner"] == row["team_a"]
+    # Higher seed (lower number) on top
+    if row["seed_a"] <= row["seed_b"]:
+        top = team_row(row["team_a"], row["seed_a"], a_wins)
+        bot = team_row(row["team_b"], row["seed_b"], not a_wins)
+    else:
+        top = team_row(row["team_b"], row["seed_b"], not a_wins)
+        bot = team_row(row["team_a"], row["seed_a"], a_wins)
     return f'''<div style="border:1px solid #333;border-radius:4px;overflow:hidden;margin:2px 0;font-size:0.85em;background:#0e1219;{'border-color:' + TIGER_BLOOD + ';' if upset else ''}">
-        {team_row(row["team_a"], row["seed_a"], a_wins)}
-        {team_row(row["team_b"], row["seed_b"], not a_wins)}
+        {top}
+        {bot}
     </div>'''
 
 
