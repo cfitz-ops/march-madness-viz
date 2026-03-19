@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import joblib
-from utils.style import inject_css, PURE_TEAL, TIGER_BLOOD
+from utils.style import inject_css, PURE_TEAL, VIVID_PURPLE
 
 st.set_page_config(page_title="Feature Importance", page_icon="🔬", layout="wide")
 inject_css()
@@ -71,7 +71,7 @@ fig = px.bar(
     df, x="coefficient", y="label",
     orientation="h",
     color="direction",
-    color_discrete_map={"Favors Team A": PURE_TEAL, "Favors Team B": TIGER_BLOOD},
+    color_discrete_map={"Favors Team A": PURE_TEAL, "Favors Team B": VIVID_PURPLE},
     labels={"coefficient": "Coefficient (scaled)", "label": ""},
 )
 fig.update_layout(
