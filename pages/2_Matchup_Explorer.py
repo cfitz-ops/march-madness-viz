@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
 import joblib
-from utils.style import inject_css, VIVID_PURPLE, PURE_TEAL
+from utils.style import inject_css, VIVID_PURPLE, TIGER_BLOOD
 from utils.queries import get_team_list, get_team_stats
 
 st.set_page_config(page_title="Matchup Explorer", page_icon="⚔️", layout="wide")
@@ -160,7 +160,7 @@ fig.add_trace(go.Bar(
     hovertemplate="%{x}: %{y:.0f}th percentile<extra></extra>",
 ))
 fig.add_trace(go.Bar(
-    name=sb["team_name"], x=stat_names, y=pct_b, marker_color=PURE_TEAL,
+    name=sb["team_name"], x=stat_names, y=pct_b, marker_color=TIGER_BLOOD,
     hovertemplate="%{x}: %{y:.0f}th percentile<extra></extra>",
 ))
 fig.update_layout(
