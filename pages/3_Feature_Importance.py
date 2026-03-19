@@ -8,7 +8,7 @@ st.set_page_config(page_title="Feature Importance", page_icon="🔬", layout="wi
 inject_css()
 
 st.title("Feature Importance")
-st.caption("Which stats drive the model's predictions?")
+st.caption("How much weight does each stat carry in the model's predictions?")
 
 
 @st.cache_resource
@@ -65,14 +65,14 @@ FEATURE_LABELS = {
 }
 
 df["label"] = df["feature"].map(FEATURE_LABELS).fillna(df["feature"])
-df["direction"] = df["coefficient"].apply(lambda x: "Favors Team A" if x > 0 else "Favors Team B")
+df["direction"] = df["coefficient"].apply(lambda x: "Higher = more likely to win" if x > 0 else "Higher = less likely to win")
 
 fig = px.bar(
     df, x="coefficient", y="label",
     orientation="h",
     color="direction",
-    color_discrete_map={"Favors Team A": PURE_TEAL, "Favors Team B": VIVID_PURPLE},
-    labels={"coefficient": "Coefficient (scaled)", "label": ""},
+    color_discrete_map={"Higher = more likely to win": PURE_TEAL, "Higher = less likely to win": VIVID_PURPLE},
+    labels={"coefficient": "Model Weight", "label": ""},
 )
 fig.update_layout(
     plot_bgcolor="rgba(0,0,0,0)",
@@ -85,11 +85,37 @@ fig.update_layout(
 )
 st.plotly_chart(fig, use_container_width=True)
 
+st.markdown("---")
+st.markdown("### How to Read This Chart")
+st.markdown("""
+Each bar represents a stat the model uses to predict winners. **Longer bars = more influence** on the prediction.
+
+- **Teal bars (right):** When a team scores higher in this stat, the model gives them a better chance of winning. For example, a team with a great Coach PAKE rating gets a significant boost.
+- **Purple bars (left):** These stats have an inverse relationship — a higher value here actually correlates with losing. For example, faster-tempo teams tend to underperform in the tournament according to our model.
+
+The model considers all of these features together for each matchup, not in isolation.
+""")
+
 # Top features explanation
 st.markdown("---")
-st.markdown("### What Matters Most")
+st.markdown("### Top 5 Predictors")
+
+FEATURE_EXPLANATIONS = {
+    "Coach PAKE": "Coaching quality measured by historical post-season performance. The single strongest signal in the model.",
+    "Strength of Schedule": "How tough a team's regular season opponents were. Battle-tested teams fare better.",
+    "Offensive Rating": "Points scored per 100 possessions. Efficient offenses win tournament games.",
+    "KenPom Efficiency Margin": "The gap between a team's offensive and defensive efficiency — the gold standard power rating.",
+    "Effective FG%": "Shooting efficiency adjusted for 3-pointers being worth more. Better shooters advance.",
+    "Tournament Round": "Later rounds favor stronger teams — upsets are more common early.",
+    "Defensive Turnover %": "How often a team forces turnovers. Disruptive defenses create extra possessions.",
+    "NET Ranking": "The NCAA's own team ranking system combining results, efficiency, and schedule.",
+    "Road Win %": "Winning away from home. Tournament games are on neutral courts — road warriors adapt.",
+    "Seed Difference": "Higher seeds (lower numbers) win more often, but this carries less weight than you'd think.",
+}
 
 top5 = df.nlargest(5, "abs_coefficient")
 for _, row in top5.iterrows():
-    direction = "↑" if row["coefficient"] > 0 else "↓"
-    st.markdown(f"**{row['label']}** — coefficient: `{row['coefficient']:.4f}` {direction}")
+    label = row["label"]
+    explanation = FEATURE_EXPLANATIONS.get(label, "")
+    weight = abs(row["coefficient"])
+    st.markdown(f"**{label}** (weight: `{weight:.3f}`) — {explanation}")
