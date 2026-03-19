@@ -6,7 +6,6 @@ import joblib
 from utils.style import inject_css, PURE_TEAL, VIVID_PURPLE
 from utils.queries import get_team_list, get_team_stats
 
-st.set_page_config(page_title="Matchup Explorer", page_icon="⚔️", layout="wide")
 inject_css()
 
 st.title("Matchup Explorer")

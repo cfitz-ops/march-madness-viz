@@ -4,7 +4,6 @@ import plotly.express as px
 from utils.style import inject_css, ELECTRIC_YELLOW, PURE_TEAL, VIVID_PURPLE, TIGER_BLOOD, CHART_COLORS
 from utils.queries import get_monte_carlo_odds
 
-st.set_page_config(page_title="Monte Carlo Odds", page_icon="🎲", layout="wide")
 inject_css()
 
 st.title("Monte Carlo Odds Board")

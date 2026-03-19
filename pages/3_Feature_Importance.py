@@ -4,7 +4,6 @@ import plotly.express as px
 import joblib
 from utils.style import inject_css, PURE_TEAL, VIVID_PURPLE
 
-st.set_page_config(page_title="Feature Importance", page_icon="🔬", layout="wide")
 inject_css()
 
 st.title("Feature Importance")

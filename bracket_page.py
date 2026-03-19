@@ -2,11 +2,6 @@ import streamlit as st
 from utils.style import inject_css, ELECTRIC_YELLOW, TIGER_BLOOD
 from utils.queries import get_bracket_results
 
-st.set_page_config(
-    page_title="March Madness Predictor",
-    page_icon="🏀",
-    layout="wide",
-)
 inject_css()
 
 st.title("2026 NCAA Tournament Bracket")
