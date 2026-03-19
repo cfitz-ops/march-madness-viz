@@ -77,7 +77,7 @@ fig = px.bar(
 fig.update_layout(
     plot_bgcolor="rgba(0,0,0,0)",
     paper_bgcolor="rgba(0,0,0,0)",
-    font_color="#FFFFFF",
+    font_color="#000000",
     height=max(400, len(df) * 28),
     margin=dict(l=0, r=20, t=10, b=30),
     legend=dict(orientation="h", yanchor="bottom", y=1.02),

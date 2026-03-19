@@ -35,12 +35,12 @@ fig = px.bar(
     top10, x="Champion_pct", y="team_name",
     orientation="h",
     labels={"Champion_pct": "Championship %", "team_name": ""},
-    color_discrete_sequence=[ELECTRIC_YELLOW],
+    color_discrete_sequence=[VIVID_PURPLE],
 )
 fig.update_layout(
     plot_bgcolor="rgba(0,0,0,0)",
     paper_bgcolor="rgba(0,0,0,0)",
-    font_color="#FFFFFF",
+    font_color="#000000",
     yaxis=dict(autorange="reversed"),
     height=400,
     margin=dict(l=0, r=20, t=10, b=30),
