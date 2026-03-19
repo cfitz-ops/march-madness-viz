@@ -1,5 +1,5 @@
 import streamlit as st
-from utils.style import inject_css, ELECTRIC_YELLOW, TIGER_BLOOD, VIVID_PURPLE
+from utils.style import inject_css, ELECTRIC_YELLOW, TIGER_BLOOD
 from utils.queries import get_bracket_results
 
 st.set_page_config(
@@ -38,15 +38,15 @@ def is_upset(row):
 def game_card_html(row):
     prob = pick_prob(row)
     upset = is_upset(row)
-    accent = TIGER_BLOOD if upset else VIVID_PURPLE
+    accent = TIGER_BLOOD if upset else ELECTRIC_YELLOW
 
     def team_row(name, seed, is_winner):
         if is_winner:
-            return f'<div style="display:flex;justify-content:space-between;padding:4px 8px;border-left:3px solid {accent};background:rgba(117,88,255,0.08);font-weight:600;color:#000;"><span>({seed}) {name}</span><span style="color:{accent};font-size:0.8em">{prob:.0%}</span></div>'
-        return f'<div style="padding:4px 8px;color:#666;">({seed}) {name}</div>'
+            return f'<div style="display:flex;justify-content:space-between;padding:4px 8px;border-left:3px solid {accent};background:rgba(245,255,128,0.1);font-weight:600;"><span>({seed}) {name}</span><span style="color:{accent};font-size:0.8em">{prob:.0%}</span></div>'
+        return f'<div style="padding:4px 8px;color:#888;">({seed}) {name}</div>'
 
     a_wins = row["predicted_winner"] == row["team_a"]
-    return f'''<div style="border:1px solid #ddd;border-radius:4px;overflow:hidden;margin:2px 0;font-size:0.85em;background:#fff;{'border-color:' + TIGER_BLOOD + ';' if upset else ''}">
+    return f'''<div style="border:1px solid #333;border-radius:4px;overflow:hidden;margin:2px 0;font-size:0.85em;background:#0e1219;{'border-color:' + TIGER_BLOOD + ';' if upset else ''}">
         {team_row(row["team_a"], row["seed_a"], a_wins)}
         {team_row(row["team_b"], row["seed_b"], not a_wins)}
     </div>'''

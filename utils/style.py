@@ -31,7 +31,7 @@ def inject_css():
 
     /* Sidebar styling */
     [data-testid="stSidebar"] {
-        background-color: #F5F5F5;
+        background-color: #0a0a0a;
     }
 
     /* Hide Streamlit branding */
@@ -39,6 +39,6 @@ def inject_css():
     footer {visibility: hidden;}
 
     /* Link colors */
-    a { color: #7558FF !important; }
+    a { color: #F5FF80 !important; }
     </style>
     """, unsafe_allow_html=True)

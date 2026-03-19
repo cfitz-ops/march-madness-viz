@@ -167,7 +167,7 @@ fig.update_layout(
     barmode="group",
     plot_bgcolor="rgba(0,0,0,0)",
     paper_bgcolor="rgba(0,0,0,0)",
-    font_color="#000000",
+    font_color="#FFFFFF",
     height=500,
     margin=dict(l=0, r=0, t=10, b=80),
     legend=dict(orientation="h", yanchor="bottom", y=1.02),
