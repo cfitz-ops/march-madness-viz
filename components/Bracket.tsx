@@ -1,0 +1,163 @@
+// components/Bracket.tsx
+import type { BracketGame } from "@/lib/types";
+import GameCard from "./GameCard";
+
+const REGION_MAP: Record<string, string> = {
+  W: "West",
+  X: "South",
+  Y: "East",
+  Z: "Midwest",
+};
+
+const ROUND_NAMES: Record<number, string> = {
+  1: "R64",
+  2: "R32",
+  3: "Sweet 16",
+  4: "Elite 8",
+};
+
+/**
+ * Visual ordering for games within a round so that adjacent pairs
+ * feed into the same next-round game.
+ */
+const VISUAL_ORDER: Record<number, number[]> = {
+  1: [1, 8, 5, 4, 6, 3, 7, 2],
+  2: [1, 4, 3, 2],
+  3: [1, 2],
+  4: [1],
+};
+
+function slotSortKey(slot: string): number {
+  const round = parseInt(slot[1]);
+  const num = parseInt(slot.slice(3));
+  const order = VISUAL_ORDER[round] || [];
+  const idx = order.indexOf(num);
+  return idx >= 0 ? idx : num;
+}
+
+function getRegion(slot: string): string {
+  return slot[2]; // W, X, Y, Z
+}
+
+interface RegionBracketProps {
+  games: BracketGame[];
+  regionCode: string;
+  reversed?: boolean;
+}
+
+function RegionBracket({ games, regionCode, reversed = false }: RegionBracketProps) {
+  const rounds = [1, 2, 3, 4];
+  const roundColumns = reversed ? [...rounds].reverse() : rounds;
+
+  return (
+    <div>
+      <h3 className="text-center text-sm font-semibold text-gray-400 mb-2">
+        {REGION_MAP[regionCode]}
+      </h3>
+      <div
+        className="grid gap-1"
+        style={{
+          gridTemplateColumns: `repeat(4, minmax(140px, 1fr))`,
+        }}
+      >
+        {roundColumns.map((round) => {
+          const roundGames = games
+            .filter((g) => g.round === round)
+            .sort((a, b) => slotSortKey(a.slot) - slotSortKey(b.slot));
+
+          const gapClass =
+            round === 1
+              ? ""
+              : round === 2
+                ? "py-4"
+                : round === 3
+                  ? "py-10"
+                  : "py-20";
+
+          return (
+            <div key={round} className="flex flex-col justify-around">
+              <div className="text-[0.6rem] text-gray-600 mb-1">
+                {ROUND_NAMES[round]}
+              </div>
+              {roundGames.map((game) => (
+                <div key={game.slot} className={gapClass}>
+                  <GameCard game={game} />
+                </div>
+              ))}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+interface BracketProps {
+  games: BracketGame[];
+}
+
+export default function Bracket({ games }: BracketProps) {
+  const leftRegions = ["W", "Y"]; // West, East on left side
+  const rightRegions = ["X", "Z"]; // South, Midwest on right side
+
+  const finalFour = games.filter((g) => g.round === 5);
+  const championship = games.filter((g) => g.round === 6);
+
+  return (
+    <div
+      className="grid gap-4 min-w-[1200px]"
+      style={{ gridTemplateColumns: "1fr auto 1fr" }}
+    >
+      {/* Left side: West and East, L→R */}
+      <div className="space-y-8">
+        {leftRegions.map((code) => (
+          <RegionBracket
+            key={code}
+            regionCode={code}
+            games={games.filter(
+              (g) => getRegion(g.slot) === code && g.round <= 4
+            )}
+          />
+        ))}
+      </div>
+
+      {/* Center: Final Four + Championship */}
+      <div className="flex flex-col items-center justify-center px-4 min-w-[180px]">
+        <h3 className="text-sm font-semibold text-amber-400 mb-4">
+          FINAL FOUR
+        </h3>
+        {finalFour.map((game) => (
+          <div key={game.slot} className="mb-2 w-full">
+            <GameCard game={game} />
+          </div>
+        ))}
+        {championship.length > 0 && (
+          <>
+            <h3 className="text-sm font-semibold text-amber-400 mt-4 mb-2">
+              CHAMPIONSHIP
+            </h3>
+            {championship.map((game) => (
+              <div key={game.slot} className="w-full">
+                <GameCard game={game} />
+              </div>
+            ))}
+          </>
+        )}
+      </div>
+
+      {/* Right side: South and Midwest, R→L */}
+      <div className="space-y-8">
+        {rightRegions.map((code) => (
+          <RegionBracket
+            key={code}
+            regionCode={code}
+            games={games.filter(
+              (g) => getRegion(g.slot) === code && g.round <= 4
+            )}
+            reversed
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
