@@ -43,7 +43,7 @@ export default function FeatureChart({ model }: Props) {
           <Tooltip
             contentStyle={{ background: "#111827", border: "1px solid #374151" }}
             labelStyle={{ color: "#f3f4f6" }}
-            formatter={(value: number) => [value.toFixed(4), "Weight"]}
+            formatter={(value) => [Number(value).toFixed(4), "Weight"]}
           />
           <Bar dataKey="coefficient" radius={[0, 4, 4, 0]}>
             {data.map((entry) => (

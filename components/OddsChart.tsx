@@ -33,7 +33,7 @@ export default function OddsChart({ teams }: { teams: MonteCarloTeam[] }) {
             width={80}
           />
           <Tooltip
-            formatter={(value: number) => [`${value}%`, "Championship"]}
+            formatter={(value) => [`${value}%`, "Championship"]}
             contentStyle={{ background: "#111827", border: "1px solid #374151" }}
             labelStyle={{ color: "#f3f4f6" }}
           />

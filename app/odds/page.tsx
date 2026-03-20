@@ -43,7 +43,7 @@ function pivotOdds(
     const team = byTeam.get(row.team_name)!;
     const key = ROUND_KEYS[row.round];
     if (key) {
-      (team as Record<string, unknown>)[key] = row.reach_probability;
+      (team as unknown as Record<string, unknown>)[key] = row.reach_probability;
     }
   }
 

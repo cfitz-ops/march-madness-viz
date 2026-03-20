@@ -138,7 +138,7 @@ export default function MatchupCompare({ teams, model }: Props) {
                 <Tooltip
                   contentStyle={{ background: "#111827", border: "1px solid #374151" }}
                   labelStyle={{ color: "#f3f4f6" }}
-                  formatter={(value: number) => [`${value}th percentile`]}
+                  formatter={(value) => [`${value}th percentile`]}
                 />
                 <Legend />
                 <Bar dataKey={teamA.team_name} fill="#14b8a6" radius={[0, 4, 4, 0]} />
