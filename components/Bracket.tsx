@@ -49,15 +49,35 @@ function RegionBracket({ games, regionCode, reversed = false }: RegionBracketPro
   const rounds = [1, 2, 3, 4];
   const roundColumns = reversed ? [...rounds].reverse() : rounds;
 
+  // 8 R64 games define 8 row slots. Later rounds span multiple rows
+  // to center between their feeder games.
+  // Row spans: R64=1, R32=2, S16=4, E8=8
+  const ROW_SPAN: Record<number, number> = { 1: 1, 2: 2, 3: 4, 4: 8 };
+
   return (
     <div>
       <h3 className="text-center text-sm font-semibold text-gray-400 mb-2">
         {REGION_MAP[regionCode]}
       </h3>
+      {/* Column headers */}
       <div
-        className="grid gap-1"
+        className="grid gap-x-2 mb-1"
         style={{
           gridTemplateColumns: `repeat(4, minmax(140px, 1fr))`,
+        }}
+      >
+        {roundColumns.map((round) => (
+          <div key={round} className="text-[0.6rem] text-gray-600">
+            {ROUND_NAMES[round]}
+          </div>
+        ))}
+      </div>
+      {/* Bracket grid: 4 columns x 8 rows */}
+      <div
+        className="grid gap-x-2 gap-y-1"
+        style={{
+          gridTemplateColumns: `repeat(4, minmax(140px, 1fr))`,
+          gridTemplateRows: `repeat(8, auto)`,
         }}
       >
         {roundColumns.map((round) => {
@@ -65,27 +85,25 @@ function RegionBracket({ games, regionCode, reversed = false }: RegionBracketPro
             .filter((g) => g.round === round)
             .sort((a, b) => slotSortKey(a.slot) - slotSortKey(b.slot));
 
-          const gapClass =
-            round === 1
-              ? ""
-              : round === 2
-                ? "py-4"
-                : round === 3
-                  ? "py-10"
-                  : "py-20";
+          const span = ROW_SPAN[round];
+          const colIndex = reversed
+            ? 4 - rounds.indexOf(round)
+            : rounds.indexOf(round) + 1;
 
-          return (
-            <div key={round} className="flex flex-col justify-around">
-              <div className="text-[0.6rem] text-gray-600 mb-1">
-                {ROUND_NAMES[round]}
+          return roundGames.map((game, i) => (
+            <div
+              key={game.slot}
+              className="flex items-center"
+              style={{
+                gridColumn: colIndex,
+                gridRow: `${i * span + 1} / span ${span}`,
+              }}
+            >
+              <div className="w-full">
+                <GameCard game={game} />
               </div>
-              {roundGames.map((game) => (
-                <div key={game.slot} className={gapClass}>
-                  <GameCard game={game} />
-                </div>
-              ))}
             </div>
-          );
+          ));
         })}
       </div>
     </div>
