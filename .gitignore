@@ -4,3 +4,6 @@ __pycache__/
 .streamlit/secrets.toml
 venv/
 .superpowers/
+node_modules/
+.next/
+.env.local
