@@ -1,9 +1,14 @@
 // app/page.tsx
-import { getBracketResults } from "@/lib/queries";
+import { getBracketResults, getAllTeamStats } from "@/lib/queries";
+import modelData from "@/data/model.json";
+import type { ModelData } from "@/lib/types";
 import Bracket from "@/components/Bracket";
 
 export default async function BracketPage() {
-  const games = await getBracketResults();
+  const [games, teamStats] = await Promise.all([
+    getBracketResults(),
+    getAllTeamStats(),
+  ]);
 
   if (games.length === 0) {
     return (
@@ -47,10 +52,11 @@ export default async function BracketPage() {
             <span className="inline-block w-2.5 h-2.5 rounded-sm bg-amber-500" />
             Upset pick
           </span>
+          <span className="text-gray-600">Click any game for stat breakdown</span>
         </div>
       </div>
 
-      <Bracket games={games} />
+      <Bracket games={games} teamStats={teamStats} model={modelData as ModelData} />
     </div>
   );
 }

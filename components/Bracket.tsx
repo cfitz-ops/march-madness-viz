@@ -1,6 +1,10 @@
 // components/Bracket.tsx
-import type { BracketGame } from "@/lib/types";
+"use client";
+
+import { useState } from "react";
+import type { BracketGame, TeamStats, ModelData } from "@/lib/types";
 import GameCard from "./GameCard";
+import MatchupModal from "./MatchupModal";
 
 const REGION_MAP: Record<string, string> = {
   W: "West",
@@ -43,15 +47,15 @@ interface RegionBracketProps {
   games: BracketGame[];
   regionCode: string;
   reversed?: boolean;
+  onGameClick: (game: BracketGame) => void;
 }
 
-function RegionBracket({ games, regionCode, reversed = false }: RegionBracketProps) {
+function RegionBracket({ games, regionCode, reversed = false, onGameClick }: RegionBracketProps) {
   const rounds = [1, 2, 3, 4];
   const roundColumns = reversed ? [...rounds].reverse() : rounds;
 
   // 8 R64 games define 8 row slots. Later rounds span multiple rows
   // to center between their feeder games.
-  // Row spans: R64=1, R32=2, S16=4, E8=8
   const ROW_SPAN: Record<number, number> = { 1: 1, 2: 2, 3: 4, 4: 8 };
 
   return (
@@ -100,7 +104,7 @@ function RegionBracket({ games, regionCode, reversed = false }: RegionBracketPro
               }}
             >
               <div className="w-full">
-                <GameCard game={game} />
+                <GameCard game={game} onClick={() => onGameClick(game)} />
               </div>
             </div>
           ));
@@ -112,9 +116,13 @@ function RegionBracket({ games, regionCode, reversed = false }: RegionBracketPro
 
 interface BracketProps {
   games: BracketGame[];
+  teamStats: TeamStats[];
+  model: ModelData;
 }
 
-export default function Bracket({ games }: BracketProps) {
+export default function Bracket({ games, teamStats, model }: BracketProps) {
+  const [selectedGame, setSelectedGame] = useState<BracketGame | null>(null);
+
   const leftRegions = ["W", "Y"]; // West, East on left side
   const rightRegions = ["X", "Z"]; // South, Midwest on right side
 
@@ -122,60 +130,73 @@ export default function Bracket({ games }: BracketProps) {
   const championship = games.filter((g) => g.round === 6);
 
   return (
-    <div
-      className="grid gap-2 w-full"
-      style={{ gridTemplateColumns: "1fr auto 1fr" }}
-    >
-      {/* Left side: West and East, L→R */}
-      <div className="space-y-8">
-        {leftRegions.map((code) => (
-          <RegionBracket
-            key={code}
-            regionCode={code}
-            games={games.filter(
-              (g) => getRegion(g.slot) === code && g.round <= 4
-            )}
-          />
-        ))}
+    <>
+      <div
+        className="grid gap-2 w-full"
+        style={{ gridTemplateColumns: "1fr auto 1fr" }}
+      >
+        {/* Left side: West and East, L→R */}
+        <div className="space-y-8">
+          {leftRegions.map((code) => (
+            <RegionBracket
+              key={code}
+              regionCode={code}
+              games={games.filter(
+                (g) => getRegion(g.slot) === code && g.round <= 4
+              )}
+              onGameClick={setSelectedGame}
+            />
+          ))}
+        </div>
+
+        {/* Center: Final Four + Championship */}
+        <div className="flex flex-col items-center justify-center px-2 min-w-[140px]">
+          <h3 className="text-sm font-semibold text-amber-400 mb-4">
+            FINAL FOUR
+          </h3>
+          {finalFour.map((game) => (
+            <div key={game.slot} className="mb-2 w-full">
+              <GameCard game={game} onClick={() => setSelectedGame(game)} />
+            </div>
+          ))}
+          {championship.length > 0 && (
+            <>
+              <h3 className="text-sm font-semibold text-amber-400 mt-4 mb-2">
+                CHAMPIONSHIP
+              </h3>
+              {championship.map((game) => (
+                <div key={game.slot} className="w-full">
+                  <GameCard game={game} onClick={() => setSelectedGame(game)} />
+                </div>
+              ))}
+            </>
+          )}
+        </div>
+
+        {/* Right side: South and Midwest, R→L */}
+        <div className="space-y-8">
+          {rightRegions.map((code) => (
+            <RegionBracket
+              key={code}
+              regionCode={code}
+              games={games.filter(
+                (g) => getRegion(g.slot) === code && g.round <= 4
+              )}
+              reversed
+              onGameClick={setSelectedGame}
+            />
+          ))}
+        </div>
       </div>
 
-      {/* Center: Final Four + Championship */}
-      <div className="flex flex-col items-center justify-center px-2 min-w-[140px]">
-        <h3 className="text-sm font-semibold text-amber-400 mb-4">
-          FINAL FOUR
-        </h3>
-        {finalFour.map((game) => (
-          <div key={game.slot} className="mb-2 w-full">
-            <GameCard game={game} />
-          </div>
-        ))}
-        {championship.length > 0 && (
-          <>
-            <h3 className="text-sm font-semibold text-amber-400 mt-4 mb-2">
-              CHAMPIONSHIP
-            </h3>
-            {championship.map((game) => (
-              <div key={game.slot} className="w-full">
-                <GameCard game={game} />
-              </div>
-            ))}
-          </>
-        )}
-      </div>
-
-      {/* Right side: South and Midwest, R→L */}
-      <div className="space-y-8">
-        {rightRegions.map((code) => (
-          <RegionBracket
-            key={code}
-            regionCode={code}
-            games={games.filter(
-              (g) => getRegion(g.slot) === code && g.round <= 4
-            )}
-            reversed
-          />
-        ))}
-      </div>
-    </div>
+      {selectedGame && (
+        <MatchupModal
+          game={selectedGame}
+          teamStats={teamStats}
+          model={model}
+          onClose={() => setSelectedGame(null)}
+        />
+      )}
+    </>
   );
 }

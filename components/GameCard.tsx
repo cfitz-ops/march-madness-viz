@@ -25,7 +25,12 @@ function getTopBottom(game: BracketGame) {
   };
 }
 
-export default function GameCard({ game }: { game: BracketGame }) {
+interface GameCardProps {
+  game: BracketGame;
+  onClick?: () => void;
+}
+
+export default function GameCard({ game, onClick }: GameCardProps) {
   const { top, bottom } = getTopBottom(game);
 
   const prob =
@@ -72,8 +77,9 @@ export default function GameCard({ game }: { game: BracketGame }) {
 
   return (
     <div
-      className="border rounded overflow-hidden my-0.5 bg-gray-900"
+      className={`border rounded overflow-hidden my-0.5 bg-gray-900${onClick ? " cursor-pointer hover:brightness-125 transition-[filter]" : ""}`}
       style={isUpset ? { borderColor: "rgb(245 158 11)" } : { borderColor: "#333" }}
+      onClick={onClick}
     >
       {teamRow(top.name, top.seed)}
       {teamRow(bottom.name, bottom.seed)}
