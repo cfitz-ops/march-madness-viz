@@ -38,11 +38,19 @@ export default async function BracketPage() {
             </span>
           </p>
         )}
+        <div className="flex gap-4 mt-3 text-xs text-gray-500">
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block w-2.5 h-2.5 rounded-sm bg-green-500" />
+            Chalk pick
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block w-2.5 h-2.5 rounded-sm bg-amber-500" />
+            Upset pick
+          </span>
+        </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <Bracket games={games} />
-      </div>
+      <Bracket games={games} />
     </div>
   );
 }

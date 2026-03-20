@@ -38,13 +38,13 @@ export default function GameCard({ game }: { game: BracketGame }) {
       ? game.seed_a > game.seed_b
       : game.seed_b > game.seed_a;
 
-  const accent = isUpset ? "rgb(239 68 68)" : "rgb(34 197 94)";
+  const accent = isUpset ? "rgb(245 158 11)" : "rgb(34 197 94)";
 
   function teamRow(name: string, seed: number) {
     const isWinner = name === game.predicted_winner;
     return (
       <div
-        className={`flex justify-between items-center px-2 py-1 text-xs ${
+        className={`flex justify-between items-center px-1.5 py-0.5 text-[0.65rem] leading-tight ${
           isWinner ? "font-semibold" : "text-gray-500"
         }`}
         style={
@@ -52,7 +52,7 @@ export default function GameCard({ game }: { game: BracketGame }) {
             ? {
                 borderLeft: `3px solid ${accent}`,
                 background: isUpset
-                  ? "rgba(239, 68, 68, 0.08)"
+                  ? "rgba(245, 158, 11, 0.08)"
                   : "rgba(34, 197, 94, 0.08)",
               }
             : {}
@@ -62,7 +62,7 @@ export default function GameCard({ game }: { game: BracketGame }) {
           ({seed}) {name}
         </span>
         {isWinner && (
-          <span className="text-[0.7rem]" style={{ color: accent }}>
+          <span className="text-[0.6rem] ml-1 shrink-0" style={{ color: accent }}>
             {Math.round(prob * 100)}%
           </span>
         )}
@@ -73,7 +73,7 @@ export default function GameCard({ game }: { game: BracketGame }) {
   return (
     <div
       className="border rounded overflow-hidden my-0.5 bg-gray-900"
-      style={isUpset ? { borderColor: "rgb(239 68 68)" } : { borderColor: "#333" }}
+      style={isUpset ? { borderColor: "rgb(245 158 11)" } : { borderColor: "#333" }}
     >
       {teamRow(top.name, top.seed)}
       {teamRow(bottom.name, bottom.seed)}

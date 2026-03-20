@@ -61,9 +61,9 @@ function RegionBracket({ games, regionCode, reversed = false }: RegionBracketPro
       </h3>
       {/* Column headers */}
       <div
-        className="grid gap-x-2 mb-1"
+        className="grid gap-x-1 mb-1"
         style={{
-          gridTemplateColumns: `repeat(4, minmax(140px, 1fr))`,
+          gridTemplateColumns: `repeat(4, 1fr)`,
         }}
       >
         {roundColumns.map((round) => (
@@ -74,9 +74,9 @@ function RegionBracket({ games, regionCode, reversed = false }: RegionBracketPro
       </div>
       {/* Bracket grid: 4 columns x 8 rows */}
       <div
-        className="grid gap-x-2 gap-y-1"
+        className="grid gap-x-1 gap-y-1"
         style={{
-          gridTemplateColumns: `repeat(4, minmax(140px, 1fr))`,
+          gridTemplateColumns: `repeat(4, 1fr)`,
           gridTemplateRows: `repeat(8, auto)`,
         }}
       >
@@ -123,7 +123,7 @@ export default function Bracket({ games }: BracketProps) {
 
   return (
     <div
-      className="grid gap-4 min-w-[1200px]"
+      className="grid gap-2 w-full"
       style={{ gridTemplateColumns: "1fr auto 1fr" }}
     >
       {/* Left side: West and East, L→R */}
@@ -140,7 +140,7 @@ export default function Bracket({ games }: BracketProps) {
       </div>
 
       {/* Center: Final Four + Championship */}
-      <div className="flex flex-col items-center justify-center px-4 min-w-[180px]">
+      <div className="flex flex-col items-center justify-center px-2 min-w-[140px]">
         <h3 className="text-sm font-semibold text-amber-400 mb-4">
           FINAL FOUR
         </h3>
