@@ -43,16 +43,16 @@ export default async function BracketPage() {
             </span>
           </p>
         )}
-        <div className="flex gap-4 mt-3 text-xs text-gray-500">
+        <div className="flex flex-wrap gap-4 mt-3 text-xs text-gray-500">
           <span className="flex items-center gap-1.5">
             <span className="inline-block w-2.5 h-2.5 rounded-sm bg-green-500" />
-            Chalk pick
+            Chalk
           </span>
           <span className="flex items-center gap-1.5">
             <span className="inline-block w-2.5 h-2.5 rounded-sm bg-amber-500" />
-            Upset pick
+            Upset
           </span>
-          <span className="text-gray-600">Click any game for stat breakdown</span>
+          <span className="text-gray-600">Scores = completed · % = predicted · Click for stats</span>
         </div>
       </div>
 

@@ -9,6 +9,9 @@ export interface BracketGame {
   team_a_win_prob: number;
   seed_a: number;
   seed_b: number;
+  actual_winner: string | null;
+  score_a: number | null;
+  score_b: number | null;
 }
 
 export interface MonteCarloRow {
