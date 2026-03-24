@@ -52,6 +52,10 @@ export default async function BracketPage() {
             <span className="inline-block w-2.5 h-2.5 rounded-sm bg-amber-500" />
             Upset
           </span>
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block w-2.5 h-2.5 rounded-sm bg-red-500" />
+            Wrong pick
+          </span>
           <span className="text-gray-600">Scores = completed · % = predicted · Click for stats</span>
         </div>
       </div>

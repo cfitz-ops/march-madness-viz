@@ -37,6 +37,9 @@ export default function GameCard({ game, onClick }: GameCardProps) {
   // For completed games, use actual winner; for predictions, use predicted winner
   const displayWinner = isCompleted ? game.actual_winner : game.predicted_winner;
 
+  const modelWrong =
+    isCompleted && game.actual_winner !== game.predicted_winner;
+
   const prob =
     game.predicted_winner === game.team_a
       ? game.team_a_win_prob
@@ -47,7 +50,11 @@ export default function GameCard({ game, onClick }: GameCardProps) {
   const loserSeed = displayWinner === game.team_a ? game.seed_b : game.seed_a;
   const isUpset = winnerSeed > loserSeed;
 
-  const accent = isUpset ? "rgb(245 158 11)" : "rgb(34 197 94)";
+  const accent = modelWrong
+    ? "rgb(239 68 68)"
+    : isUpset
+    ? "rgb(245 158 11)"
+    : "rgb(34 197 94)";
 
   function teamRow(name: string, seed: number, score: number | null) {
     const isWinner = name === displayWinner;
@@ -83,13 +90,18 @@ export default function GameCard({ game, onClick }: GameCardProps) {
 
   return (
     <div
-      className={`border rounded overflow-hidden my-0.5 bg-gray-900${onClick ? " cursor-pointer hover:brightness-125 transition-[filter]" : ""}`}
-      style={isUpset ? { borderColor: "rgb(245 158 11)" } : { borderColor: "#333" }}
+      className={`border rounded overflow-hidden my-0.5 bg-gray-900${onClick ? " cursor-pointer hover:brightness-125 transition-[filter]" : ""}${modelWrong ? " bg-red-950/20" : ""}`}
+      style={{ borderColor: modelWrong ? "rgb(239 68 68)" : isUpset ? "rgb(245 158 11)" : "#333" }}
       onClick={onClick}
     >
       {isCompleted && (
-        <div className="text-[0.5rem] text-gray-600 px-1.5 pt-0.5 uppercase tracking-wider">
-          Final
+        <div className={`text-[0.5rem] px-1.5 pt-0.5 uppercase tracking-wider flex justify-between ${modelWrong ? "text-red-500" : "text-gray-600"}`}>
+          <span>{modelWrong ? "Wrong" : "Final"}</span>
+          {modelWrong && (
+            <span className="normal-case tracking-normal">
+              picked {game.predicted_winner}
+            </span>
+          )}
         </div>
       )}
       {teamRow(top.name, top.seed, top.score)}
