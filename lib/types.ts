@@ -69,6 +69,21 @@ export interface TeamStats {
   [key: string]: unknown; // allow dynamic access for DIFF_MAP
 }
 
+export interface LivePrediction {
+  game_id: string;
+  round: number;
+  team_a: string;
+  team_b: string;
+  seed_a: number;
+  seed_b: number;
+  team_a_win_prob: number;
+  predicted_winner: string;
+  pretournament_winner: string | null;
+  agrees_with_pretournament: boolean;
+  actual_winner: string | null;
+  spread: number | null;
+}
+
 export interface ModelData {
   features: string[];
   coefficients: number[];

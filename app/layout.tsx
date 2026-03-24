@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 const NAV_ITEMS = [
   { href: "/", label: "Bracket" },
   { href: "/odds", label: "Odds" },
+  { href: "/live", label: "Live Picks" },
   { href: "/matchup", label: "Matchup" },
   { href: "/features", label: "Features" },
 ];
